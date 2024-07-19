@@ -6,14 +6,15 @@ export default defineNuxtConfig({
   vite: {
     css: {
       preprocessorOptions: {
-        sass: {
-          additionalData: '@use "~/assets/sass/_utils.sass" as *\n',
-        },
+        sass: { additionalData: '@use "~/assets/sass/_utils.sass" as *\n' },
       },
     },
   },
   modules: ["@nuxtjs/i18n"],
-  i18n: {
-    vueI18n: "./i18n.config.ts",
+  i18n: { vueI18n: "./i18n.config.ts" },
+  nitro: { experimental: { websocket: true } },
+  ssr: false,
+  routeRules: {
+    "/": { ssr: true },
   },
 });
