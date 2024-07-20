@@ -1,12 +1,17 @@
 <template>
-  <h1>Hello World</h1>
-  <p>
-    Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus, fugit.
-  </p>
-  <NuxtLink to="/games/tic-tac-toe/abc">Tic tac toe</NuxtLink>
-  <NuxtLink to="/games/uno/abcd">Uno</NuxtLink>
+  <section class="Games">
+    <GamesCard v-for="(game, index) in games" :key="index" v-bind="game" />
+  </section>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const games = [{ name: "Tic Tac Toe", path: "tic-tac-toe" }];
+</script>
 
-<style scope lang="sass"></style>
+<style scope lang="sass">
+.Games
+  @include f--c()
+  width: 100%
+  flex-wrap: wrap
+  gap: 2rem
+</style>

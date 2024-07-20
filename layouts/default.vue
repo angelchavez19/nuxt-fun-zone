@@ -13,7 +13,11 @@
       </NuxtLink>
     </header>
   </div>
-  <slot />
+  <div class="MainContainer">
+    <main class="Main">
+      <slot />
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts"></script>
@@ -55,6 +59,15 @@
       border-radius: 20px
       text-decoration: none
       box-shadow: 0 0 7px $electric-blue
+.MainContainer
+  @include f-c-c()
+  padding: 1rem
+  .Main
+    display: flex
+    flex-direction: column
+    width: 100%
+    max-width: 1500px
+    padding: 1rem
 
 @media (min-width: 570px)
   .HeaderContainer
