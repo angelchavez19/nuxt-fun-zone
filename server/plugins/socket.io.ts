@@ -7,10 +7,15 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
   const io = new Server();
 
+  const board = ["", "", "", "", "", "", "", "", ""];
+  let player = "O";
+
   io.bind(engine);
 
   io.on("connection", (socket) => {
-    // ...
+    socket.on("init", () => {
+      socket.emit("board", board, player);
+    });
   });
 
   nitroApp.router.use(

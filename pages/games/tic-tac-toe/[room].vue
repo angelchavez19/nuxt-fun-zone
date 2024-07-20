@@ -3,6 +3,12 @@
     <p>Status: {{ isConnected ? "connected" : "disconnected" }}</p>
     <p>Transport: {{ transport }}</p>
   </div>
+  <div v-show="!isPlaying">
+    <button @click="handleClick">Init Game</button>
+  </div>
+  <h1>Board</h1>
+  <h2>Player: {{ player }}</h2>
+  <GamesTicTacToeBoard :board="board" />
 </template>
 
 <script setup lang="ts">
@@ -10,6 +16,9 @@ import { socket } from "~/components/socket";
 
 const isConnected = ref(false);
 const transport = ref("N/A");
+const isPlaying = ref(false);
+const board: Ref<string[]> = ref([]);
+const player: Ref<string> = ref("");
 
 if (socket.connected) {
   onConnect();
@@ -29,7 +38,16 @@ function onDisconnect() {
   transport.value = "N/A";
 }
 
+function handleClick() {
+  isPlaying.value = true;
+  socket.emit("init");
+}
+
 socket.on("connect", onConnect);
+socket.on("board", (_board: string[], _player: string) => {
+  board.value = _board;
+  player.value = _player;
+});
 socket.on("disconnect", onDisconnect);
 
 onBeforeUnmount(() => {
@@ -37,3 +55,5 @@ onBeforeUnmount(() => {
   socket.off("disconnect", onDisconnect);
 });
 </script>
+
+<style lang="sass"></style>
