@@ -7,13 +7,18 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
   const engine = new Engine();
   const io = new Server();
 
-  const board = ["", "", "", "", "", "", "", "", ""];
-  let player = "O";
-
   io.bind(engine);
 
   io.on("connection", (socket) => {
+    const board = ["", "", "", "", "", "", "", "", ""];
+    let player: "O" | "X" = "O";
+
     socket.on("init", () => {
+      socket.emit("board", board, player);
+    });
+    socket.on("move", (index: number) => {
+      board[index] = player;
+      player = player === "O" ? "X" : "O";
       socket.emit("board", board, player);
     });
   });

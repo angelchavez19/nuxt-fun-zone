@@ -1,7 +1,8 @@
 <template>
   <div class="Board">
     <div class="Board-cell" v-for="(cell, index) in board" :key="index">
-      <span>{{ cell }}</span>
+      <span v-if="cell">{{ cell }}</span>
+      <button v-else @click="$emit('handleClickOnBoard', index)"></button>
     </div>
   </div>
 </template>
@@ -11,6 +12,7 @@ interface Props {
   board: string[];
 }
 defineProps<Props>();
+defineEmits(["handleClickOnBoard"]);
 </script>
 
 <style scope lang="sass">
@@ -28,5 +30,10 @@ defineProps<Props>();
     outline: 3px solid $light-gray
     border-radius: 5px
     span
-        @include font-audiowide(4rem)
+      @include font-audiowide(4rem)
+    button
+      width: 100%
+      height: 100%
+      background-color: $dark-gray
+      border: none
 </style>

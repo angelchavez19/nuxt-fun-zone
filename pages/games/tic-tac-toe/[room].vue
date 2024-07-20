@@ -8,7 +8,10 @@
   </div>
   <h1>Board</h1>
   <h2>Player: {{ player }}</h2>
-  <GamesTicTacToeBoard :board="board" />
+  <GamesTicTacToeBoard
+    :board="board"
+    @handleClickOnBoard="handleClickOnBoard"
+  />
 </template>
 
 <script setup lang="ts">
@@ -41,6 +44,10 @@ function onDisconnect() {
 function handleClick() {
   isPlaying.value = true;
   socket.emit("init");
+}
+
+function handleClickOnBoard(index: number) {
+  socket.emit("move", index);
 }
 
 socket.on("connect", onConnect);
