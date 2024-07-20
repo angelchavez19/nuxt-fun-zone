@@ -1,9 +1,14 @@
 <template>
   <div>
+    <button @click="createRoom">Create Room</button>
+    <input v-model="roomId" placeholder="Room ID" />
+    <button @click="joinRoom">Join Room</button>
+  </div>
+  <div>
     <p>Status: {{ isConnected ? "connected" : "disconnected" }}</p>
     <p>Transport: {{ transport }}</p>
   </div>
-  <div v-show="!isPlaying">
+  <div v-show="!isPlaying && roomId">
     <button @click="handleClick">Init Game</button>
   </div>
   <h1>Board</h1>
@@ -15,13 +20,15 @@
 </template>
 
 <script setup lang="ts">
+import { ref, onBeforeUnmount } from "vue";
 import { socket } from "~/components/socket";
 
 const isConnected = ref(false);
 const transport = ref("N/A");
 const isPlaying = ref(false);
-const board: Ref<string[]> = ref([]);
-const player: Ref<string> = ref("");
+const board = ref<string[]>([]);
+const player = ref<string>("");
+const roomId = ref<string>("");
 
 if (socket.connected) {
   onConnect();
@@ -43,18 +50,37 @@ function onDisconnect() {
 
 function handleClick() {
   isPlaying.value = true;
-  socket.emit("init");
+  socket.emit("init", roomId.value);
 }
 
 function handleClickOnBoard(index: number) {
-  socket.emit("move", index);
+  socket.emit("move", roomId.value, index);
+}
+
+function createRoom() {
+  socket.emit("createRoom");
+}
+
+function joinRoom() {
+  socket.emit("joinRoom", roomId.value);
 }
 
 socket.on("connect", onConnect);
+
 socket.on("board", (_board: string[], _player: string) => {
   board.value = _board;
   player.value = _player;
 });
+
+socket.on("roomCreated", (newRoomId: string) => {
+  roomId.value = newRoomId;
+  console.log(`Room created: ${newRoomId}`);
+});
+
+socket.on("roomJoined", (joinedRoomId: string) => {
+  console.log(`Joined room: ${joinedRoomId}`);
+});
+
 socket.on("disconnect", onDisconnect);
 
 onBeforeUnmount(() => {
